@@ -1,0 +1,23 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+          enabled: true
+
+paths:
+  allowed: /api/admin,/api/auth,/api/user
+  auth: http://user-server/api/auth/jwt-token
