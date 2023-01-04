@@ -37,13 +37,13 @@ public class UserController {
         this.fieldErrorsToMapConverter = fieldErrorsToMapConverter;
     }
 
-    @GetMapping(value = "/me", produces = "application/json")
+    @GetMapping(value = "/me", produces = "application/json", name = "Get current user")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> read(@AuthenticationPrincipal UserDetailsImp userDetailsImp) {
         return ResponseEntity.ok(userDetailsImp.getUser());
     }
 
-    @PutMapping(value = "/me/version/{version}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/me/version/{version}", consumes = "application/json", produces = "application/json", name = "Update current user")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> update(@PathVariable("version") long version,
                                        @RequestBody @Valid NewUserDTO newUserDTO,
@@ -58,7 +58,7 @@ public class UserController {
                 unixTimeToLocalDateTimeConverter.convert(version)));
     }
 
-    @DeleteMapping(value = "/me/version/{version}", produces = "application/json")
+    @DeleteMapping(value = "/me/version/{version}", produces = "application/json", name = "Delete current user")
     public ResponseEntity<Void> delete(@PathVariable("version") long version,
                                        @AuthenticationPrincipal UserDetailsImp userDetailsImp) {
 

@@ -41,7 +41,7 @@ public class JournalController {
         this.unixTimeToLocalDateTimeConverter = unixTimeToLocalDateTimeConverter;
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json", name = "Get journal by id")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Journal> read(@PathVariable("id") UUID id,
                                         @RequestHeader("USER_ID") UUID userId) {
@@ -51,7 +51,7 @@ public class JournalController {
                 .orElseThrow(() -> new NotFoundException("Journal with id " + id + " not found"));
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping(consumes = "application/json", produces = "application/json", name = "Create journal")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Journal> create(@RequestBody JournalDTO journalDTO,
                                           @RequestHeader("USER_ID") UUID userId) {
@@ -69,7 +69,7 @@ public class JournalController {
                 ResponseEntity.status(HttpStatus.CREATED).body(journalService.createWithRecipe(journalDTO, userId));
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = "application/json", name = "Get all journals")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Page<Journal>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size,
@@ -82,7 +82,7 @@ public class JournalController {
         return ResponseEntity.ok(journalService.read(page, size, userId));
     }
 
-    @GetMapping(value = "/between", produces = "application/json")
+    @GetMapping(value = "/between", produces = "application/json", name = "Get journals between dates")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Collection<Journal>> read(@RequestParam(value = "dt_supply_start") long dtSupplyStart,
                                                     @RequestParam(value = "dt_supply_end") long dtSupplyEnd,

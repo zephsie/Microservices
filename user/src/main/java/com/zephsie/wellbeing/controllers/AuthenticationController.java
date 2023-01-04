@@ -61,7 +61,7 @@ public class AuthenticationController {
         this.fieldErrorsToMapConverter = fieldErrorsToMapConverter;
     }
 
-    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json", name = "Login")
     public ResponseEntity<TokenDTO> login(@RequestBody @Valid LoginDTO loginDTO,
                                           BindingResult bindingResult) {
 
@@ -83,7 +83,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new TokenDTO(token));
     }
 
-    @PostMapping(value = "/registration", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/registration", consumes = "application/json", produces = "application/json", name = "Register")
     public ResponseEntity<Map<String, String>> register(@RequestBody @Valid NewUserDTO personDTO,
                                                         BindingResult bindingResult) {
 
@@ -98,7 +98,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(Map.of("message", "Registration successful. Please check your email for verification link."));
     }
 
-    @PostMapping(value = "/verification", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/verification", consumes = "application/json", produces = "application/json", name = "Verify")
     public ResponseEntity<TokenDTO> verify(@RequestBody @Valid VerificationDTO verificationDTO,
                                            BindingResult bindingResult) {
 
@@ -115,7 +115,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new TokenDTO(token));
     }
 
-    @PutMapping(value = "/access-token", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/access-token", consumes = "application/json", produces = "application/json", name = "Refresh access token")
     public ResponseEntity<Map<String, String>> refresh(@RequestBody @Valid LoginDTO loginDTO,
                                                        BindingResult bindingResult) {
 
@@ -130,7 +130,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(Map.of("message", "Registration successful. Please check your email for verification link."));
     }
 
-    @PostMapping(value = "/jwt-token", produces = "application/json")
+    @PostMapping(value = "/jwt-token", produces = "application/json", name = "Get JWT token")
     public ResponseEntity<UserIdDTO> verifyToken(@RequestBody @Valid TokenDTO tokenDTO,
                                                  BindingResult bindingResult) {
 

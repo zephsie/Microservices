@@ -38,7 +38,7 @@ public class RecipeController {
         this.validator = validator;
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json", name = "Get recipe by id")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Recipe> read(@PathVariable("id") UUID id) {
 
@@ -47,7 +47,7 @@ public class RecipeController {
                 .orElseThrow(() -> new NotFoundException("Recipe with id " + id + " not found"));
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = "application/json", name = "Get all recipes")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Page<Recipe>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                              @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -59,7 +59,7 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.read(page, size));
     }
 
-    @GetMapping(value = "/my", produces = "application/json")
+    @GetMapping(value = "/my", produces = "application/json", name = "Get all recipes of current user")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Page<Recipe>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                              @RequestParam(value = "size", defaultValue = "10") int size,
@@ -72,7 +72,7 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.read(page, size, userId));
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping(consumes = "application/json", produces = "application/json", name = "Create new recipe")
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Recipe> create(@RequestBody RecipeDTO recipeDTO,
                                          @RequestHeader("USER_ID") UUID userId) {

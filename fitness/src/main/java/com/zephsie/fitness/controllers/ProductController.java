@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @JsonView(EntityView.System.class)
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json", name = "Get product by id")
     public ResponseEntity<Product> read(@PathVariable("id") UUID id) {
 
         return productService.read(id)
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @JsonView(EntityView.System.class)
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = "application/json", name = "Get all products")
     public ResponseEntity<Page<Product>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size) {
 
@@ -62,7 +62,7 @@ public class ProductController {
     }
 
     @JsonView(EntityView.System.class)
-    @GetMapping(value = "/my", produces = "application/json")
+    @GetMapping(value = "/my", produces = "application/json", name = "Get all products of current user")
     public ResponseEntity<Page<Product>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                               @RequestHeader("USER_ID") UUID userId) {
@@ -75,7 +75,7 @@ public class ProductController {
     }
 
     @JsonView(EntityView.System.class)
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping(consumes = "application/json", produces = "application/json", name = "Create new product")
     public ResponseEntity<Product> create(@RequestBody @Valid ProductDTO productDTO,
                                           BindingResult bindingResult,
                                           @RequestHeader("USER_ID") UUID userId) {
@@ -88,7 +88,7 @@ public class ProductController {
     }
 
     @JsonView(EntityView.System.class)
-    @PutMapping(value = "/{id}/version/{version}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/{id}/version/{version}", consumes = "application/json", produces = "application/json", name = "Update product")
     public ResponseEntity<Product> update(@PathVariable("id") UUID id,
                                           @PathVariable("version") long version,
                                           @RequestBody @Valid ProductDTO productDTO,
