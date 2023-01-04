@@ -5,7 +5,7 @@ import com.zephsie.fitness.dtos.RecipeDTO;
 import com.zephsie.fitness.models.entity.Recipe;
 import com.zephsie.fitness.services.api.IRecipeService;
 import com.zephsie.fitness.utils.exceptions.BasicFieldValidationException;
-import com.zephsie.fitness.utils.exceptions.IllegalPaginationValuesException;
+import com.zephsie.fitness.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.fitness.utils.exceptions.NotFoundException;
 import com.zephsie.fitness.utils.groups.CompositionListSequence;
 import com.zephsie.fitness.utils.groups.RecipeDTOSequence;
@@ -53,7 +53,7 @@ public class RecipeController {
                                              @RequestParam(value = "size", defaultValue = "10") int size) {
 
         if (page < 0 || size <= 0) {
-            throw new IllegalPaginationValuesException("Pagination values are not correct");
+            throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
         return ResponseEntity.ok(recipeService.read(page, size));
@@ -66,7 +66,7 @@ public class RecipeController {
                                              @RequestParam(value = "userId") UUID userId) {
 
         if (page < 0 || size <= 0) {
-            throw new IllegalPaginationValuesException("Pagination values are not correct");
+            throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
         return ResponseEntity.ok(recipeService.read(page, size, userId));

@@ -4,17 +4,18 @@ import com.zephsie.fitness.models.entity.Journal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface JournalRepository extends JpaRepository<Journal, UUID> {
-    @NonNull
-    Page<Journal> findAllByUserId(@NonNull Pageable pageable, @NonNull UUID userId);
+    Page<Journal> findAllByUserId(Pageable pageable, UUID userId);
 
-    @NonNull
-    Optional<Journal> findByIdAndUserId(@NonNull UUID id, @NonNull UUID userId);
+    Optional<Journal> findByIdAndUserId(UUID id, UUID userId);
+
+    Collection<Journal> findAllByUserIdAndDtSupplyBetween(UUID userId, LocalDateTime dtSupplyStart, LocalDateTime dtSupplyEnd);
 }

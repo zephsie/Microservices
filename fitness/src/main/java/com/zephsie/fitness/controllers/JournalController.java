@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.zephsie.fitness.dtos.JournalDTO;
 import com.zephsie.fitness.models.entity.Journal;
 import com.zephsie.fitness.services.api.IJournalService;
+import com.zephsie.fitness.utils.converters.UnixTimeToLocalDateTimeConverter;
 import com.zephsie.fitness.utils.exceptions.BasicFieldValidationException;
-import com.zephsie.fitness.utils.exceptions.IllegalPaginationValuesException;
+import com.zephsie.fitness.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.fitness.utils.exceptions.NotFoundException;
 import com.zephsie.fitness.utils.groups.BasicJournalFieldsSequence;
 import com.zephsie.fitness.utils.groups.TotalJournalSequence;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
@@ -30,10 +32,13 @@ public class JournalController {
 
     private final Validator validator;
 
+    private final UnixTimeToLocalDateTimeConverter unixTimeToLocalDateTimeConverter;
+
     @Autowired
-    public JournalController(IJournalService journalService, Validator validator) {
+    public JournalController(IJournalService journalService, Validator validator, UnixTimeToLocalDateTimeConverter unixTimeToLocalDateTimeConverter) {
         this.journalService = journalService;
         this.validator = validator;
+        this.unixTimeToLocalDateTimeConverter = unixTimeToLocalDateTimeConverter;
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -71,9 +76,22 @@ public class JournalController {
                                               @RequestHeader("USER_ID") UUID userId) {
 
         if (page < 0 || size <= 0) {
-            throw new IllegalPaginationValuesException("Pagination values are not correct");
+            throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
         return ResponseEntity.ok(journalService.read(page, size, userId));
+    }
+
+    @GetMapping(value = "/between", produces = "application/json")
+    @JsonView(EntityView.WithMappings.class)
+    public ResponseEntity<Collection<Journal>> read(@RequestParam(value = "dt_supply_start") long dtSupplyStart,
+                                                    @RequestParam(value = "dt_supply_end") long dtSupplyEnd,
+                                                    @RequestHeader("USER_ID") UUID userId) {
+
+        if (dtSupplyStart > dtSupplyEnd) {
+            throw new IllegalParamValuesException("Start date is greater than end date");
+        }
+
+        return ResponseEntity.ok(journalService.read(userId, unixTimeToLocalDateTimeConverter.convert(dtSupplyStart), unixTimeToLocalDateTimeConverter.convert(dtSupplyEnd)));
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -17,6 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetailsImp loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.findByEmail(s).map(UserDetailsImp::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email " + s + " not found"));

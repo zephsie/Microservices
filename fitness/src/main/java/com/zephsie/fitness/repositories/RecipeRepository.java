@@ -17,9 +17,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, UUID> {
     @EntityGraph(value = "recipeWithCompositionsAndProducts", type = EntityGraph.EntityGraphType.LOAD)
     Page<Recipe> findAll(@NonNull Pageable pageable);
 
-    @NonNull
     @EntityGraph(value = "recipeWithCompositionsAndProducts", type = EntityGraph.EntityGraphType.LOAD)
-    Page<Recipe> findAllByUserId(@NonNull Pageable pageable, @NonNull UUID userId);
+    Page<Recipe> findAllByUserId(Pageable pageable, UUID userId);
 
     @NonNull
     @EntityGraph(value = "recipeWithCompositionsAndProducts", type = EntityGraph.EntityGraphType.LOAD)

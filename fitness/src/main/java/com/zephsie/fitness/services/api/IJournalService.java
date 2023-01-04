@@ -4,6 +4,8 @@ import com.zephsie.fitness.dtos.JournalDTO;
 import com.zephsie.fitness.models.entity.Journal;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +17,6 @@ public interface IJournalService {
     Optional<Journal> read(UUID id, UUID userId);
 
     Page<Journal> read(int page, int size, UUID userId);
+
+    Collection<Journal> read(UUID userId, LocalDateTime dtSupplyStart, LocalDateTime dtSupplyEnd);
 }

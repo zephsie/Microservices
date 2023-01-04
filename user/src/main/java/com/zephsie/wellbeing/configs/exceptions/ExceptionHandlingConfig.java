@@ -34,7 +34,7 @@ public class ExceptionHandlingConfig {
                         ResponseEntity.status(HttpStatus.CONFLICT).body(new SingleErrorResponse("error", e.getMessage()))),
                 Map.entry(NotUniqueException.class, e ->
                         ResponseEntity.status(HttpStatus.CONFLICT).body(new SingleErrorResponse("error", e.getMessage()))),
-                Map.entry(IllegalPaginationValuesException.class, e ->
+                Map.entry(IllegalParamValuesException.class, e ->
                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", e.getMessage()))),
                 Map.entry(InvalidCredentialException.class, e ->
                         ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new SingleErrorResponse("error", e.getMessage()))),

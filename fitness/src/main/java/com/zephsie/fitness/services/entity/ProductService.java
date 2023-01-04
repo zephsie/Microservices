@@ -5,6 +5,7 @@ import com.zephsie.fitness.models.entity.Product;
 import com.zephsie.fitness.repositories.ProductRepository;
 import com.zephsie.fitness.services.api.IProductService;
 import com.zephsie.fitness.utils.converters.api.IEntityDTOConverter;
+import com.zephsie.fitness.utils.exceptions.AccessDeniedException;
 import com.zephsie.fitness.utils.exceptions.NotFoundException;
 import com.zephsie.fitness.utils.exceptions.WrongVersionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,13 @@ public class ProductService implements IProductService {
     @Override
     @Transactional
     public Product update(UUID id, ProductDTO productDTO, LocalDateTime version, UUID userId) {
-        Optional<Product> optionalProduct = productRepository.findByIdAndUserId(id, userId);
+        Optional<Product> optionalProduct = productRepository.findById(id);
 
         Product existingProduct = optionalProduct.orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"));
+
+        if (!existingProduct.getUserId().equals(userId)) {
+            throw new AccessDeniedException("Access denied");
+        }
 
         if (!existingProduct.getDtUpdate().equals(version)) {
             throw new WrongVersionException("Product with id " + id + " has been updated");

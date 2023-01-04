@@ -15,12 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @NonNull
     Page<Product> findAll(@NonNull Pageable pageable);
 
-    @NonNull
-    Page<Product> findAllByUserId(@NonNull Pageable pageable, @NonNull UUID userId);
+    Page<Product> findAllByUserId(Pageable pageable, UUID userId);
 
     @NonNull
     Optional<Product> findById(@NonNull UUID id);
-
-    @NonNull
-    Optional<Product> findByIdAndUserId(@NonNull UUID id, @NonNull UUID userId);
 }

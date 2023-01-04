@@ -9,7 +9,7 @@ import com.zephsie.wellbeing.services.api.IUserService;
 import com.zephsie.wellbeing.utils.converters.FieldErrorsToMapConverter;
 import com.zephsie.wellbeing.utils.converters.UnixTimeToLocalDateTimeConverter;
 import com.zephsie.wellbeing.utils.exceptions.BasicFieldValidationException;
-import com.zephsie.wellbeing.utils.exceptions.IllegalPaginationValuesException;
+import com.zephsie.wellbeing.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.wellbeing.utils.exceptions.NotFoundException;
 import com.zephsie.wellbeing.utils.views.EntityView;
 import jakarta.validation.Valid;
@@ -85,7 +85,7 @@ public class AdminController {
                                            @RequestParam(value = "size", defaultValue = "10") int size) {
 
         if (page < 0 || size <= 0) {
-            throw new IllegalPaginationValuesException("Pagination values are not correct");
+            throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
         return ResponseEntity.ok(userService.read(page, size));

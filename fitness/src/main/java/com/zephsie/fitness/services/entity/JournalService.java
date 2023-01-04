@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +34,7 @@ public class JournalService implements IJournalService {
     }
 
     @Override
+    @Transactional
     public Journal createWithProduct(JournalDTO journalDTO, UUID userId) {
         Optional<Product> optionalProduct = productRepository.findById(journalDTO.getProduct().getId());
 
@@ -48,6 +52,7 @@ public class JournalService implements IJournalService {
     }
 
     @Override
+    @Transactional
     public Journal createWithRecipe(JournalDTO journalDTO, UUID userId) {
         Optional<Recipe> optionalRecipe = recipeRepository.findById(journalDTO.getRecipe().getId());
 
@@ -65,12 +70,20 @@ public class JournalService implements IJournalService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Journal> read(UUID id, UUID userId) {
         return journalRepository.findByIdAndUserId(id, userId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Journal> read(int page, int size, UUID userId) {
         return journalRepository.findAllByUserId(Pageable.ofSize(size).withPage(page), userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Journal> read(UUID userId, LocalDateTime dtSupplyStart, LocalDateTime dtSupplyEnd) {
+        return journalRepository.findAllByUserIdAndDtSupplyBetween(userId, dtSupplyStart, dtSupplyEnd);
     }
 }

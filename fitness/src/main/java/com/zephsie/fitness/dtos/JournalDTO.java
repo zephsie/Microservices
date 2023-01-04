@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class JournalDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @JsonDeserialize(using = CustomLocalDateTimeDesSerializer.class)
-    @NotNull(message = "DtSupply is required", groups = {BasicJournalFieldsGroup.FirstOrder.class})
+    @NotNull(message = "dt_supply is required", groups = {BasicJournalFieldsGroup.FirstOrder.class})
     private LocalDateTime dtSupply;
 
     @NotNull(message = "Weight is required", groups = {BasicJournalFieldsGroup.FirstOrder.class})

@@ -7,7 +7,7 @@ import com.zephsie.fitness.services.api.IProductService;
 import com.zephsie.fitness.utils.converters.FieldErrorsToMapConverter;
 import com.zephsie.fitness.utils.converters.UnixTimeToLocalDateTimeConverter;
 import com.zephsie.fitness.utils.exceptions.BasicFieldValidationException;
-import com.zephsie.fitness.utils.exceptions.IllegalPaginationValuesException;
+import com.zephsie.fitness.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.fitness.utils.exceptions.NotFoundException;
 import com.zephsie.fitness.utils.views.EntityView;
 import jakarta.validation.Valid;
@@ -55,7 +55,7 @@ public class ProductController {
                                               @RequestParam(value = "size", defaultValue = "10") int size) {
 
         if (page < 0 || size <= 0) {
-            throw new IllegalPaginationValuesException("Pagination values are not correct");
+            throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
         return ResponseEntity.ok(productService.read(page, size));
@@ -68,7 +68,7 @@ public class ProductController {
                                               @RequestHeader("USER_ID") UUID userId) {
 
         if (page < 0 || size <= 0) {
-            throw new IllegalPaginationValuesException("Pagination values are not correct");
+            throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
         return ResponseEntity.ok(productService.read(page, size, userId));

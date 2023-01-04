@@ -12,6 +12,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ public class ExceptionHandlingConfig {
                         ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SingleErrorResponse("error", e.getMessage()))),
                 Map.entry(WrongVersionException.class, e ->
                         ResponseEntity.status(HttpStatus.CONFLICT).body(new SingleErrorResponse("error", e.getMessage()))),
-                Map.entry(IllegalPaginationValuesException.class, e ->
+                Map.entry(IllegalParamValuesException.class, e ->
                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", e.getMessage()))),
                 Map.entry(MethodArgumentTypeMismatchException.class, e ->
                         ResponseEntity.badRequest().body(new SingleErrorResponse("error", "Invalid values passed"))),
@@ -41,8 +42,12 @@ public class ExceptionHandlingConfig {
                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", e.getMessage()))),
                 Map.entry(BasicFieldValidationException.class, e -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new MultipleErrorResponse("error", ((BasicFieldValidationException) e).getErrors()))),
+                Map.entry(AccessDeniedException.class, e ->
+                        ResponseEntity.status(HttpStatus.FORBIDDEN).body(new SingleErrorResponse("error", e.getMessage()))),
                 Map.entry(MissingRequestHeaderException.class, e ->
-                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request header")))
+                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request header"))),
+                Map.entry(MissingServletRequestParameterException.class, e ->
+                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request parameter")))
         );
     }
 
