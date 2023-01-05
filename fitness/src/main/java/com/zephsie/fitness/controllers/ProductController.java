@@ -2,6 +2,7 @@ package com.zephsie.fitness.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zephsie.fitness.dtos.ProductDTO;
+import com.zephsie.fitness.logging.Logging;
 import com.zephsie.fitness.models.entity.Product;
 import com.zephsie.fitness.services.api.IProductService;
 import com.zephsie.fitness.utils.converters.FieldErrorsToMapConverter;
@@ -76,7 +77,8 @@ public class ProductController {
 
     @JsonView(EntityView.System.class)
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Product> create(@RequestBody @Valid ProductDTO productDTO,
+    @Logging(type = "PRODUCT", description = "Create product", userIdPosition = 2)
+            public ResponseEntity<Product> create(@RequestBody @Valid ProductDTO productDTO,
                                           BindingResult bindingResult,
                                           @RequestHeader("USER_ID") UUID userId) {
 
@@ -89,6 +91,7 @@ public class ProductController {
 
     @JsonView(EntityView.System.class)
     @PutMapping(value = "/{id}/version/{version}", consumes = "application/json", produces = "application/json")
+    @Logging(type = "PRODUCT", description = "Update product", userIdPosition = 4)
     public ResponseEntity<Product> update(@PathVariable("id") UUID id,
                                           @PathVariable("version") long version,
                                           @RequestBody @Valid ProductDTO productDTO,

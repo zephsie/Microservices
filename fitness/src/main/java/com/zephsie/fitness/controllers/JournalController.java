@@ -2,6 +2,7 @@ package com.zephsie.fitness.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zephsie.fitness.dtos.JournalDTO;
+import com.zephsie.fitness.logging.Logging;
 import com.zephsie.fitness.models.entity.Journal;
 import com.zephsie.fitness.services.api.IJournalService;
 import com.zephsie.fitness.utils.converters.UnixTimeToLocalDateTimeConverter;
@@ -53,6 +54,7 @@ public class JournalController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @JsonView(EntityView.WithMappings.class)
+    @Logging(type = "JOURNAL", description = "Create journal", userIdPosition = 1)
     public ResponseEntity<Journal> create(@RequestBody JournalDTO journalDTO,
                                           @RequestHeader("USER_ID") UUID userId) {
 

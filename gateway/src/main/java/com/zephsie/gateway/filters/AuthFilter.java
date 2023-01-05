@@ -97,7 +97,7 @@ public class AuthFilter implements GlobalFilter {
                     return chain.filter(exchange);
                 })
                 .onErrorResume(InvalidCredentialException.class, (e) -> sendError(exchange, new SingleErrorResponse("error", e.getMessage()), HttpStatus.UNAUTHORIZED))
-                .onErrorResume(Exception.class, (e) -> sendError(exchange, new SingleErrorResponse("error", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR));
+                .onErrorResume(Exception.class, (e) -> sendError(exchange, new SingleErrorResponse("error", "Server error"), HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @SneakyThrows

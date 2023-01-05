@@ -2,6 +2,7 @@ package com.zephsie.fitness.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zephsie.fitness.dtos.RecipeDTO;
+import com.zephsie.fitness.logging.Logging;
 import com.zephsie.fitness.models.entity.Recipe;
 import com.zephsie.fitness.services.api.IRecipeService;
 import com.zephsie.fitness.utils.exceptions.BasicFieldValidationException;
@@ -74,6 +75,7 @@ public class RecipeController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @JsonView(EntityView.WithMappings.class)
+    @Logging(type = "RECIPE", description = "Create recipe", userIdPosition = 1)
     public ResponseEntity<Recipe> create(@RequestBody RecipeDTO recipeDTO,
                                          @RequestHeader("USER_ID") UUID userId) {
 

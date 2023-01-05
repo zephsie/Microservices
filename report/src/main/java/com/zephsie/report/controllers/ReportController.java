@@ -2,6 +2,7 @@ package com.zephsie.report.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zephsie.report.dtos.ReportDTO;
+import com.zephsie.report.logging.Logging;
 import com.zephsie.report.models.entity.Report;
 import com.zephsie.report.models.entity.ReportType;
 import com.zephsie.report.queue.ReportProducer;
@@ -55,6 +56,7 @@ public class ReportController {
 
     @PostMapping(value = "/{type}", produces = "application/json")
     @JsonView(EntityView.System.class)
+    @Logging(type = "REPORT", description = "Create report", userIdPosition = 3)
     public ResponseEntity<Report> create(@PathVariable("type") ReportType type,
                                          @RequestParam(value = "from") long from,
                                          @RequestParam(value = "to") long to,
