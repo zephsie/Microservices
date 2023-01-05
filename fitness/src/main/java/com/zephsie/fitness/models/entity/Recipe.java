@@ -22,19 +22,20 @@ import java.util.UUID;
 @Table(name = "recipe", schema = "structure")
 @NoArgsConstructor
 @JsonView(EntityView.class)
-@NamedEntityGraph(
-        name = "recipeWithCompositionsAndProducts",
-        attributeNodes =
-                {
-                        @NamedAttributeNode("composition"),
-                        @NamedAttributeNode(value = "composition", subgraph = "compositionWithProduct"),
-                },
-        subgraphs = @NamedSubgraph
-                (
-                        name = "compositionWithProduct",
-                        attributeNodes = @NamedAttributeNode("product")
-                )
-)
+@NamedEntityGraph
+        (
+                name = "recipeWithCompositionsAndProducts",
+                attributeNodes =
+                        {
+                                @NamedAttributeNode("composition"),
+                                @NamedAttributeNode(value = "composition", subgraph = "compositionWithProduct"),
+                        },
+                subgraphs = @NamedSubgraph
+                        (
+                                name = "compositionWithProduct",
+                                attributeNodes = @NamedAttributeNode("product")
+                        )
+        )
 public class Recipe implements IImmutableEntity<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

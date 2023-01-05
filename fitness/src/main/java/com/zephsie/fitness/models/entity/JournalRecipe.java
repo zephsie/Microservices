@@ -15,8 +15,14 @@ import org.hibernate.annotations.DynamicUpdate;
 @NamedEntityGraph(
         name = "journalWithRecipe",
         attributeNodes = {
-                @NamedAttributeNode("recipe")
-        }
+                @NamedAttributeNode("recipe"),
+                @NamedAttributeNode(value = "recipe", subgraph = "recipeWithCompositionsAndProducts"),
+        },
+        subgraphs = @NamedSubgraph
+                (
+                        name = "recipeWithCompositionsAndProducts",
+                        attributeNodes = @NamedAttributeNode("composition")
+                )
 )
 public class JournalRecipe extends Journal {
 
