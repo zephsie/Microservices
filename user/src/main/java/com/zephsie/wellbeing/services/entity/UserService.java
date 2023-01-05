@@ -97,6 +97,10 @@ public class UserService implements IUserService {
             throw new WrongVersionException("User with id " + id + " has been updated");
         }
 
+        if (existingUser.getRole() == Role.ROLE_ADMIN && role == Role.ROLE_USER && userRepository.countByRole(Role.ROLE_ADMIN) == 1) {
+            throw new ValidationException("There must be at least one admin");
+        }
+
         existingUser.setRole(role);
 
         userRepository.save(existingUser);
@@ -115,28 +119,14 @@ public class UserService implements IUserService {
             throw new WrongVersionException("User with id " + id + " has been updated");
         }
 
+        if (existingUser.getRole() == Role.ROLE_ADMIN && status != Status.ACTIVE && userRepository.countByRole(Role.ROLE_ADMIN) == 1) {
+            throw new ValidationException("Last admin can't be deactivated");
+        }
+
         existingUser.setStatus(status);
 
         userRepository.save(existingUser);
 
         return existingUser;
-    }
-
-    @Override
-    @Transactional
-    public void delete(UUID id, LocalDateTime version) {
-        Optional<User> optionalPerson = userRepository.findById(id);
-
-        User existingUser = optionalPerson.orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
-
-        if (!existingUser.getDtUpdate().equals(version)) {
-            throw new WrongVersionException("User with id " + id + " has been updated");
-        }
-
-        if (existingUser.getRole().equals(Role.ROLE_ADMIN) && userRepository.countByRole(Role.ROLE_ADMIN) == 1) {
-            throw new ValidationException("User with id " + id + " is the only admin");
-        }
-
-        userRepository.delete(existingUser);
     }
 }

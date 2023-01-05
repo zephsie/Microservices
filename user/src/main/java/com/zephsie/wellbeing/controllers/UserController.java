@@ -11,10 +11,8 @@ import com.zephsie.wellbeing.utils.exceptions.BasicFieldValidationException;
 import com.zephsie.wellbeing.utils.views.EntityView;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,13 +35,13 @@ public class UserController {
         this.fieldErrorsToMapConverter = fieldErrorsToMapConverter;
     }
 
-    @GetMapping(value = "/me", produces = "application/json", name = "Get current user")
+    @GetMapping(value = "/me", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> read(@AuthenticationPrincipal UserDetailsImp userDetailsImp) {
         return ResponseEntity.ok(userDetailsImp.getUser());
     }
 
-    @PutMapping(value = "/me/version/{version}", consumes = "application/json", produces = "application/json", name = "Update current user")
+    @PutMapping(value = "/me/version/{version}", consumes = "application/json", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> update(@PathVariable("version") long version,
                                        @RequestBody @Valid NewUserDTO newUserDTO,
@@ -56,14 +54,5 @@ public class UserController {
 
         return ResponseEntity.ok(userService.update(userDetailsImp.getUser().getId(), newUserDTO,
                 unixTimeToLocalDateTimeConverter.convert(version)));
-    }
-
-    @DeleteMapping(value = "/me/version/{version}", produces = "application/json", name = "Delete current user")
-    public ResponseEntity<Void> delete(@PathVariable("version") long version,
-                                       @AuthenticationPrincipal UserDetailsImp userDetailsImp) {
-
-        userService.delete(userDetailsImp.getUser().getId(), unixTimeToLocalDateTimeConverter.convert(version));
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

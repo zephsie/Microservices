@@ -35,7 +35,7 @@ public class ReportController {
         this.reportProducer = reportProducer;
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json", name = "Get report by id")
+    @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<Report> read(@PathVariable("id") UUID id,
                                        @RequestHeader("USER_ID") UUID userId) {
@@ -45,7 +45,7 @@ public class ReportController {
                 .orElseThrow(() -> new NotFoundException("Report not found"));
     }
 
-    @GetMapping(value = "/{id}/content", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name = "Get report content by id")
+    @GetMapping(value = "/{id}/content", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> readContent(@PathVariable("id") UUID id,
                                               @RequestHeader("USER_ID") UUID userId) {
 
@@ -53,7 +53,7 @@ public class ReportController {
         return ResponseEntity.ok(bytes);
     }
 
-    @PostMapping(value = "/{type}", produces = "application/json", name = "Create report")
+    @PostMapping(value = "/{type}", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<Report> create(@PathVariable("type") ReportType type,
                                          @RequestParam(value = "from") long from,
@@ -73,12 +73,12 @@ public class ReportController {
 
         log.info("Report created: {}", report.getId());
 
-        reportProducer.produce(report.getId());
+        reportProducer.produce(report);
 
         return ResponseEntity.ok(report);
     }
 
-    @GetMapping(produces = "application/json", name = "Get all reports")
+    @GetMapping(produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<Page<Report>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                              @RequestParam(value = "size", defaultValue = "10") int size,

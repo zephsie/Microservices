@@ -23,6 +23,4 @@ public interface IUserService {
     User updateRole(UUID id, Role role, LocalDateTime version);
 
     User updateStatus(UUID id, Status status, LocalDateTime version);
-
-    void delete(UUID id, LocalDateTime version);
 }

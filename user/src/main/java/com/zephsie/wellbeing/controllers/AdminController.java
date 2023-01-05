@@ -41,7 +41,7 @@ public class AdminController {
         this.fieldErrorsToMapConverter = fieldErrorsToMapConverter;
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json", name = "Create user")
+    @PostMapping(consumes = "application/json", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> create(@RequestBody @Valid UserDTO userDTO,
                                        BindingResult bindingResult) {
@@ -53,7 +53,7 @@ public class AdminController {
         return ResponseEntity.ok(userService.create(userDTO));
     }
 
-    @PutMapping(value = "/{id}/role/{role}/version/{version}", produces = "application/json", name = "Update user role")
+    @PutMapping(value = "/{id}/role/{role}/version/{version}", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> updateRole(@PathVariable("id") UUID id,
                                            @PathVariable("role") Role role,
@@ -62,7 +62,7 @@ public class AdminController {
         return ResponseEntity.ok(userService.updateRole(id, role, unixTimeToLocalDateTimeConverter.convert(version)));
     }
 
-    @PutMapping(value = "/{id}/status/{status}/version/{version}", produces = "application/json", name = "Update user status")
+    @PutMapping(value = "/{id}/status/{status}/version/{version}", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> updateRole(@PathVariable("id") UUID id,
                                            @PathVariable("status") Status role,
@@ -71,7 +71,7 @@ public class AdminController {
         return ResponseEntity.ok(userService.updateStatus(id, role, unixTimeToLocalDateTimeConverter.convert(version)));
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json", name = "Get user by id")
+    @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<User> read(@PathVariable("id") UUID id) {
 
@@ -79,7 +79,7 @@ public class AdminController {
                 .orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
     }
 
-    @GetMapping(produces = "application/json", name = "Get all users")
+    @GetMapping(produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<Page<User>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                            @RequestParam(value = "size", defaultValue = "10") int size) {

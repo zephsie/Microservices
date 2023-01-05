@@ -12,6 +12,12 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "journal_recipe", schema = "structure")
 @DynamicUpdate
 @NoArgsConstructor
+@NamedEntityGraph(
+        name = "journalWithRecipe",
+        attributeNodes = {
+                @NamedAttributeNode("recipe")
+        }
+)
 public class JournalRecipe extends Journal {
 
     @ManyToOne(targetEntity = Recipe.class)
