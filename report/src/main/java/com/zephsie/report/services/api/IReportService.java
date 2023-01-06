@@ -2,7 +2,6 @@ package com.zephsie.report.services.api;
 
 import com.zephsie.report.dtos.ReportDTO;
 import com.zephsie.report.models.entity.Report;
-import com.zephsie.report.models.entity.ReportContent;
 import com.zephsie.report.models.entity.Status;
 import org.springframework.data.domain.Page;
 
@@ -20,9 +19,5 @@ public interface IReportService {
 
     Page<Report> read(int page, int size, UUID userId);
 
-    Report saveReportContent(UUID id, ReportContent reportContent, LocalDateTime version);
-
     Report setReportStatus(UUID id, Status status, LocalDateTime version);
-
-    Report readReadyReport(UUID id, UUID userId);
 }

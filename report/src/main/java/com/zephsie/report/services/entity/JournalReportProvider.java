@@ -3,7 +3,7 @@ package com.zephsie.report.services.entity;
 import com.zephsie.report.dtos.JournalDTO;
 import com.zephsie.report.feign.JournalService;
 import com.zephsie.report.models.entity.Report;
-import com.zephsie.report.models.entity.ReportContent;
+import com.zephsie.report.services.api.IReportProvider;
 import com.zephsie.report.utils.converters.LocalDateTimeToUnixTimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -18,7 +18,7 @@ import java.util.Collection;
 
 @Service
 @Slf4j
-public class JournalReportProvider {
+public class JournalReportProvider implements IReportProvider {
     private final JournalService journalService;
 
     private final LocalDateTimeToUnixTimeConverter localDateTimeToUnixTimeConverter;
@@ -29,7 +29,7 @@ public class JournalReportProvider {
         this.localDateTimeToUnixTimeConverter = localDateTimeToUnixTimeConverter;
     }
 
-    public ReportContent generateReport(Report report) {
+    public byte[] generateReport(Report report) {
         Collection<JournalDTO> collection = journalService.read(
                 localDateTimeToUnixTimeConverter.convert(report.getDtFrom()),
                 localDateTimeToUnixTimeConverter.convert(report.getDtTo()),
@@ -40,7 +40,6 @@ public class JournalReportProvider {
         //////////////////////////////////////////////////////////////////////////////////////////
 
         try (Workbook workbook = new XSSFWorkbook()) {
-
             //////////////////////////////////////////////////////////////////////////////////////////
             // logic
 
@@ -59,15 +58,13 @@ public class JournalReportProvider {
 
             //////////////////////////////////////////////////////////////////////////////////////////
 
-            ReportContent reportContent = new ReportContent();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workbook.write(byteArrayOutputStream);
 
-            workbook.write(out);
+            workbook.close();
 
-            reportContent.setContent(out.toByteArray());
-
-            return reportContent;
+            return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

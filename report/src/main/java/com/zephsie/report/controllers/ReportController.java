@@ -5,14 +5,20 @@ import com.zephsie.report.dtos.ReportDTO;
 import com.zephsie.report.logging.Logging;
 import com.zephsie.report.models.entity.Report;
 import com.zephsie.report.models.entity.ReportType;
+import com.zephsie.report.models.entity.Status;
 import com.zephsie.report.queue.ReportProducer;
 import com.zephsie.report.services.api.IReportService;
 import com.zephsie.report.utils.converters.UnixTimeToLocalDateTimeConverter;
 import com.zephsie.report.utils.exceptions.IllegalParamValuesException;
+import com.zephsie.report.utils.exceptions.IllegalStateException;
 import com.zephsie.report.utils.exceptions.NotFoundException;
 import com.zephsie.report.utils.views.EntityView;
+import io.minio.GetObjectArgs;
+import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +35,21 @@ public class ReportController {
 
     private final ReportProducer reportProducer;
 
+    private final MinioClient minioClient;
+
+    @Value("${minio.bucket.name}")
+    private String bucketName;
+
     @Autowired
-    public ReportController(IReportService reportService, UnixTimeToLocalDateTimeConverter unixTimeToLocalDateTimeConverter, ReportProducer reportProducer) {
+    public ReportController(IReportService reportService,
+                            UnixTimeToLocalDateTimeConverter unixTimeToLocalDateTimeConverter,
+                            ReportProducer reportProducer,
+                            MinioClient minioClient) {
+
         this.reportService = reportService;
         this.unixTimeToLocalDateTimeConverter = unixTimeToLocalDateTimeConverter;
         this.reportProducer = reportProducer;
+        this.minioClient = minioClient;
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -50,8 +66,23 @@ public class ReportController {
     public ResponseEntity<byte[]> readContent(@PathVariable("id") UUID id,
                                               @RequestHeader("USER_ID") UUID userId) {
 
-        byte[] bytes = reportService.readReadyReport(id, userId).getReportContent().getContent();
-        return ResponseEntity.ok(bytes);
+        Report report = reportService.read(id, userId)
+                .orElseThrow(() -> new NotFoundException("Report not found"));
+
+        if (report.getStatus() != Status.DONE) {
+            throw new IllegalStateException("Report is not ready");
+        }
+
+        try {
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=" + report.getId())
+                    .body(IOUtils.toByteArray(minioClient.getObject(GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(report.getId().toString())
+                            .build())));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping(value = "/{type}", produces = "application/json")

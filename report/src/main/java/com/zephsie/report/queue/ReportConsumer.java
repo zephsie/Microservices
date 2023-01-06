@@ -1,17 +1,21 @@
 package com.zephsie.report.queue;
 
 import com.zephsie.report.models.entity.Report;
-import com.zephsie.report.models.entity.ReportContent;
 import com.zephsie.report.models.entity.ReportType;
 import com.zephsie.report.models.entity.Status;
 import com.zephsie.report.services.api.IReportService;
 import com.zephsie.report.services.entity.JournalReportProvider;
 import com.zephsie.report.utils.exceptions.NotFoundException;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Component
@@ -22,10 +26,16 @@ public class ReportConsumer {
 
     private final JournalReportProvider journalReportProvider;
 
+    private final MinioClient minioClient;
+
+    @Value("${minio.bucket.name}")
+    private String bucketName;
+
     @Autowired
-    public ReportConsumer(IReportService reportService, JournalReportProvider journalReportProvider) {
+    public ReportConsumer(IReportService reportService, JournalReportProvider journalReportProvider,  MinioClient minioClient) {
         this.reportService = reportService;
         this.journalReportProvider = journalReportProvider;
+        this.minioClient = minioClient;
     }
 
     @RabbitListener(queues = "${rabbitmq.queue}", concurrency = "30")
@@ -35,16 +45,24 @@ public class ReportConsumer {
 
             Report report = reportService.read(id).orElseThrow(() -> new NotFoundException("Report not found"));
 
-            try {
-                ReportContent reportContent;
+            byte[] reportBytes;
 
+            try {
                 if (report.getReportType() == ReportType.JOURNAL) {
-                    reportContent = journalReportProvider.generateReport(report);
+                    reportBytes = journalReportProvider.generateReport(report);
                 } else {
                     throw new NotFoundException("Report type not supported");
                 }
 
-                reportService.saveReportContent(id, reportContent, report.getDtUpdate());
+                InputStream inputStream = new ByteArrayInputStream(reportBytes);
+
+                minioClient.putObject(PutObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(report.getId().toString())
+                        .stream(inputStream, inputStream.available(), -1)
+                        .build());
+
+                reportService.setReportStatus(id, Status.DONE, report.getDtUpdate());
             } catch (Exception e) {
                 reportService.setReportStatus(id, Status.ERROR, report.getDtUpdate());
                 throw e;

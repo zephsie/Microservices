@@ -1,6 +1,5 @@
 package com.zephsie.report.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -76,14 +75,6 @@ public class Report implements IBaseEntity<UUID> {
     @Setter
     @JsonView(EntityView.Base.class)
     private LocalDateTime dtTo;
-
-    @OneToOne(targetEntity = ReportContent.class, fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "report_content_id")
-    @Access(AccessType.PROPERTY)
-    @Getter
-    @Setter
-    @JsonIgnore
-    private ReportContent reportContent;
 
     @Version
     @Column(name = "dt_update", columnDefinition = "TIMESTAMP", precision = 3)

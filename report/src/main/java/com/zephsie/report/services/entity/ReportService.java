@@ -2,11 +2,9 @@ package com.zephsie.report.services.entity;
 
 import com.zephsie.report.dtos.ReportDTO;
 import com.zephsie.report.models.entity.Report;
-import com.zephsie.report.models.entity.ReportContent;
 import com.zephsie.report.models.entity.Status;
 import com.zephsie.report.repositories.ReportRepository;
 import com.zephsie.report.services.api.IReportService;
-import com.zephsie.report.utils.exceptions.IllegalStateException;
 import com.zephsie.report.utils.exceptions.NotFoundException;
 import com.zephsie.report.utils.exceptions.WrongVersionException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,25 +61,6 @@ public class ReportService implements IReportService {
 
     @Override
     @Transactional
-    public Report saveReportContent(UUID id, ReportContent reportContent, LocalDateTime version) {
-        Report report = reportRepository.findById(id).orElseThrow(() -> new NotFoundException("Report not found"));
-
-        if (!report.getDtUpdate().equals(version)) {
-            throw new WrongVersionException("Report version is wrong");
-        }
-
-        if (report.getStatus() != Status.PROCESSING) {
-            throw new IllegalStateException("Report is not in processing state");
-        }
-
-        report.setReportContent(reportContent);
-        report.setStatus(Status.DONE);
-
-        return reportRepository.save(report);
-    }
-
-    @Override
-    @Transactional
     public Report setReportStatus(UUID id, Status status, LocalDateTime version) {
         Report report = reportRepository.findById(id).orElseThrow(() -> new NotFoundException("Report not found"));
 
@@ -92,17 +71,5 @@ public class ReportService implements IReportService {
         report.setStatus(status);
 
         return reportRepository.save(report);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Report readReadyReport(UUID id, UUID userId) {
-        Report report = read(id, userId).orElseThrow(() -> new NotFoundException("Report not found"));
-
-        if (report.getStatus() != Status.DONE) {
-            throw new IllegalStateException("Report is not ready");
-        }
-
-        return report;
     }
 }
