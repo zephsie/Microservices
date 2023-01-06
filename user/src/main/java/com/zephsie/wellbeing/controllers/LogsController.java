@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/audit")
-public class AuditController {
+@RequestMapping("/api/logs")
+public class LogsController {
 
     private final AuditFeignService auditFeignService;
 
     private final IAuditService auditService;
 
     @Autowired
-    public AuditController(AuditFeignService auditFeignService, IAuditService auditService) {
+    public LogsController(AuditFeignService auditFeignService, IAuditService auditService) {
         this.auditFeignService = auditFeignService;
         this.auditService = auditService;
     }

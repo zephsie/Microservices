@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -21,16 +22,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.List;
 
 @Component
 @Slf4j
+@Order(-100)
 public class AuthFilter implements GlobalFilter {
 
     private final WebClient.Builder webClientBuilder;
 
     @Value("${paths.allowed}")
     private List<String> allowedPaths;
+
+    @Value("${paths.forbidden}")
+    private List<String> forbiddenPaths;
 
     @Value("${paths.auth}")
     private String authPath;
@@ -45,13 +51,23 @@ public class AuthFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String path = exchange.getRequest().getURI().getPath();
+        URI uri = exchange.getRequest().getURI();
+
+        log.info("URI: {}", uri);
+
+        String path = uri.getPath();
 
         log.info("Path: {}", path);
 
         for (String allowedPath : allowedPaths) {
             if (path.startsWith(allowedPath)) {
                 return chain.filter(exchange);
+            }
+        }
+
+        for (String forbiddenPath : forbiddenPaths) {
+            if (path.startsWith(forbiddenPath)) {
+                return sendError(exchange, new SingleErrorResponse("Forbidden", "You are not allowed to access this resource"), HttpStatus.FORBIDDEN);
             }
         }
 
