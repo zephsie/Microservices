@@ -16,7 +16,6 @@ import com.zephsie.report.utils.views.EntityView;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -76,10 +75,11 @@ public class ReportController {
         try {
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=" + report.getId())
-                    .body(IOUtils.toByteArray(minioClient.getObject(GetObjectArgs.builder()
+                    .body((minioClient.getObject(GetObjectArgs.builder()
                             .bucket(bucketName)
                             .object(report.getId().toString())
-                            .build())));
+                            .build()))
+                            .readAllBytes());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
