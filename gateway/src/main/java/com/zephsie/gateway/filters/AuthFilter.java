@@ -27,7 +27,6 @@ import java.util.List;
 
 @Component
 @Slf4j
-@Order(-100)
 public class AuthFilter implements GlobalFilter {
 
     private final WebClient.Builder webClientBuilder;
