@@ -1,13 +1,12 @@
-package com.zephsie.report.models.entity;
+package com.zephsie.fitness.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.zephsie.report.models.api.IBaseEntity;
-import com.zephsie.report.utils.serializers.CustomLocalDateTimeDesSerializer;
-import com.zephsie.report.utils.serializers.CustomLocalDateTimeSerializer;
-import com.zephsie.report.utils.views.EntityView;
+import com.zephsie.fitness.models.api.IBaseEntity;
+import com.zephsie.fitness.utils.serializers.CustomLocalDateTimeDesSerializer;
+import com.zephsie.fitness.utils.serializers.CustomLocalDateTimeSerializer;
+import com.zephsie.fitness.utils.views.EntityView;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,19 +14,18 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "report", schema = "structure")
+@Table(name = "profile", schema = "structure")
 @DynamicUpdate
 @NoArgsConstructor
 @JsonView(EntityView.class)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Report implements IBaseEntity<UUID> {
+public class Profile implements IBaseEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     @Access(AccessType.PROPERTY)
     @Getter
@@ -35,13 +33,33 @@ public class Report implements IBaseEntity<UUID> {
     @JsonView(EntityView.Base.class)
     private UUID id;
 
-    @Column(name = "report_type", nullable = false)
+    @Column(name = "height", nullable = false)
     @Access(AccessType.PROPERTY)
     @Getter
     @Setter
     @JsonView(EntityView.Base.class)
-    @Enumerated(EnumType.STRING)
-    private ReportType reportType;
+    private Double height;
+
+    @Column(name = "weight", nullable = false)
+    @Access(AccessType.PROPERTY)
+    @Getter
+    @Setter
+    @JsonView(EntityView.Base.class)
+    private Double weight;
+
+    @Column(name = "target", nullable = false)
+    @Access(AccessType.PROPERTY)
+    @Getter
+    @Setter
+    @JsonView(EntityView.Base.class)
+    private Double target;
+
+    @Column(name = "dt_birthday", columnDefinition = "DATE", nullable = false)
+    @Access(AccessType.PROPERTY)
+    @Getter
+    @Setter
+    @JsonView(EntityView.Base.class)
+    private LocalDate birthday;
 
     @Column(name = "status", nullable = false)
     @Access(AccessType.PROPERTY)
@@ -49,32 +67,15 @@ public class Report implements IBaseEntity<UUID> {
     @Setter
     @JsonView(EntityView.Base.class)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private ActivityType activityType;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "gender", nullable = false)
     @Access(AccessType.PROPERTY)
-    @Getter
-    @Setter
-    @JsonView(EntityView.Full.class)
-    private UUID userId;
-
-    @Column(name = "dt_from", columnDefinition = "TIMESTAMP", precision = 3, nullable = false)
-    @Access(AccessType.PROPERTY)
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @JsonDeserialize(using = CustomLocalDateTimeDesSerializer.class)
     @Getter
     @Setter
     @JsonView(EntityView.Base.class)
-    private LocalDateTime dtFrom;
-
-    @Column(name = "dt_to", columnDefinition = "TIMESTAMP", precision = 3, nullable = false)
-    @Access(AccessType.PROPERTY)
-    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @JsonDeserialize(using = CustomLocalDateTimeDesSerializer.class)
-    @Getter
-    @Setter
-    @JsonView(EntityView.Base.class)
-    private LocalDateTime dtTo;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Version
     @Column(name = "dt_update", columnDefinition = "TIMESTAMP", precision = 3)

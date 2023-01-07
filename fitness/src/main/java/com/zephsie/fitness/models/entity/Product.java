@@ -1,6 +1,5 @@
 package com.zephsie.fitness.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -22,7 +21,6 @@ import java.util.UUID;
 @Table(name = "product", schema = "structure")
 @DynamicUpdate
 @NoArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonView(EntityView.class)
 public class Product implements IBaseEntity<UUID> {
     @Id
@@ -76,7 +74,7 @@ public class Product implements IBaseEntity<UUID> {
     @JsonView(EntityView.Base.class)
     private Double carbohydrates;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     @Access(AccessType.PROPERTY)
     @Getter
     @Setter

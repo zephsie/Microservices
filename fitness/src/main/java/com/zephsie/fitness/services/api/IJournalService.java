@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IJournalService {
@@ -14,7 +13,7 @@ public interface IJournalService {
 
     Journal createWithRecipe(JournalDTO journalDTO, UUID userId);
 
-    Optional<Journal> read(UUID id, UUID userId);
+    Journal read(UUID id, UUID userId);
 
     Page<Journal> read(int page, int size, UUID userId);
 

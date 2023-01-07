@@ -19,6 +19,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@NamedEntityGraph(
+        name = "Journal",
+        subclassSubgraphs = {
+                @NamedSubgraph(
+                        name = "JournalWithProduct",
+                        type = JournalProduct.class,
+                        attributeNodes = @NamedAttributeNode("product")
+                ),
+                @NamedSubgraph(
+                        name = "JournalWithRecipe",
+                        type = JournalRecipe.class,
+                        attributeNodes = @NamedAttributeNode("recipe")
+                )
+        }
+)
 public abstract class Journal implements IImmutableEntity<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -45,12 +60,13 @@ public abstract class Journal implements IImmutableEntity<UUID> {
     @JsonView(EntityView.Base.class)
     private Integer weight;
 
-    @Column(name = "user_id")
+    @ManyToOne(targetEntity = Profile.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id", nullable = false)
     @Access(AccessType.PROPERTY)
     @Getter
     @Setter
     @JsonView(EntityView.Full.class)
-    private UUID userId;
+    private Profile profile;
 
     @Column(name = "dt_create", columnDefinition = "TIMESTAMP", precision = 3)
     @Access(AccessType.FIELD)

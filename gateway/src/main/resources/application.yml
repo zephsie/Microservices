@@ -21,4 +21,4 @@ spring:
 paths:
   allowed: /api/admin,/api/auth,/api/user,/api/logs
   auth: http://user-server/api/auth/jwt-token
-  forbidden: /api/audit
+  forbidden: /system

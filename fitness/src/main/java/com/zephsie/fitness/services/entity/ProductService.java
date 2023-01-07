@@ -60,9 +60,8 @@ public class ProductService implements IProductService {
     @Override
     @Transactional
     public Product update(UUID id, ProductDTO productDTO, LocalDateTime version, UUID userId) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
-
-        Product existingProduct = optionalProduct.orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"));
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
 
         if (!existingProduct.getUserId().equals(userId)) {
             throw new AccessDeniedException("Access denied");

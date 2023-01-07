@@ -47,7 +47,9 @@ public class ExceptionHandlingConfig {
                 Map.entry(MissingRequestHeaderException.class, e ->
                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request header"))),
                 Map.entry(MissingServletRequestParameterException.class, e ->
-                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request parameter")))
+                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request parameter"))),
+                Map.entry(NotUniqueException.class, e ->
+                        ResponseEntity.status(HttpStatus.CONFLICT).body(new SingleErrorResponse("error", e.getMessage())))
         );
     }
 

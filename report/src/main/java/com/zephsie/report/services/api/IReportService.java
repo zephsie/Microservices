@@ -15,7 +15,7 @@ public interface IReportService {
 
     Optional<Report> read(UUID id);
 
-    Optional<Report> read(UUID id, UUID userId);
+    Report read(UUID id, UUID userId);
 
     Page<Report> read(int page, int size, UUID userId);
 

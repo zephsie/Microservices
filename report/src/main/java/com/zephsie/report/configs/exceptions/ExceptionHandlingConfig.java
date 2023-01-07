@@ -1,5 +1,6 @@
 package com.zephsie.report.configs.exceptions;
 
+import com.zephsie.report.utils.exceptions.AccessDeniedException;
 import com.zephsie.report.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.report.utils.exceptions.NotFoundException;
 import com.zephsie.report.utils.responses.api.ErrorResponse;
@@ -41,7 +42,9 @@ public class ExceptionHandlingConfig {
                 Map.entry(MissingRequestHeaderException.class, e ->
                         ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request header"))),
                 Map.entry(MissingServletRequestParameterException.class, e ->
-                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request parameter")))
+                        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SingleErrorResponse("error", "Missing request parameter"))),
+                Map.entry(AccessDeniedException.class, e ->
+                        ResponseEntity.status(HttpStatus.FORBIDDEN).body(new SingleErrorResponse("error", e.getMessage())))
         );
     }
 

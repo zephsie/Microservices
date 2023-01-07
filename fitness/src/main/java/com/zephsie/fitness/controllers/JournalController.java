@@ -8,7 +8,6 @@ import com.zephsie.fitness.services.api.IJournalService;
 import com.zephsie.fitness.utils.converters.UnixTimeToLocalDateTimeConverter;
 import com.zephsie.fitness.utils.exceptions.BasicFieldValidationException;
 import com.zephsie.fitness.utils.exceptions.IllegalParamValuesException;
-import com.zephsie.fitness.utils.exceptions.NotFoundException;
 import com.zephsie.fitness.utils.groups.BasicJournalFieldsSequence;
 import com.zephsie.fitness.utils.groups.TotalJournalSequence;
 import com.zephsie.fitness.utils.views.EntityView;
@@ -47,9 +46,7 @@ public class JournalController {
     public ResponseEntity<Journal> read(@PathVariable("id") UUID id,
                                         @RequestHeader("USER_ID") UUID userId) {
 
-        return journalService.read(id, userId)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new NotFoundException("Journal with id " + id + " not found"));
+        return ResponseEntity.ok(journalService.read(id, userId));
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")

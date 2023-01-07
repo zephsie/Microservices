@@ -58,7 +58,7 @@ public class Recipe implements IImmutableEntity<UUID> {
     @JsonView(EntityView.WithMappings.class)
     private List<Composition> composition = new ArrayList<>();
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     @Access(AccessType.PROPERTY)
     @Getter
     @Setter

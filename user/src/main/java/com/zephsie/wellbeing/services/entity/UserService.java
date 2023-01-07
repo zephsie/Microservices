@@ -129,4 +129,22 @@ public class UserService implements IUserService {
 
         return existingUser;
     }
+
+    @Override
+    @Transactional
+    public void delete(UUID id, LocalDateTime version) {
+        Optional<User> optionalPerson = userRepository.findById(id);
+
+        User existingUser = optionalPerson.orElseThrow(() -> new NotFoundException("User with id " + id + " not found"));
+
+        if (!existingUser.getDtUpdate().equals(version)) {
+            throw new WrongVersionException("User with id " + id + " has been updated");
+        }
+
+        if (existingUser.getRole().equals(Role.ROLE_ADMIN) && userRepository.countByRole(Role.ROLE_ADMIN) == 1) {
+            throw new ValidationException("User with id " + id + " is the only admin");
+        }
+
+        userRepository.delete(existingUser);
+    }
 }

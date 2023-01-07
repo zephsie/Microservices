@@ -5,6 +5,7 @@ import com.zephsie.report.models.entity.Report;
 import com.zephsie.report.models.entity.Status;
 import com.zephsie.report.repositories.ReportRepository;
 import com.zephsie.report.services.api.IReportService;
+import com.zephsie.report.utils.exceptions.AccessDeniedException;
 import com.zephsie.report.utils.exceptions.NotFoundException;
 import com.zephsie.report.utils.exceptions.WrongVersionException;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +44,18 @@ public class ReportService implements IReportService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Report> read(UUID id, UUID userId) {
-        return reportRepository.findByIdAndUserId(id, userId);
+    public Report read(UUID id, UUID userId) {
+        Optional<Report> report = reportRepository.findById(id);
+
+        if (report.isEmpty()) {
+            throw new NotFoundException("Report not found");
+        }
+
+        if (!report.get().getUserId().equals(userId)) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        return report.get();
     }
 
     @Override

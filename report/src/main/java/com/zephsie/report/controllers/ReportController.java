@@ -11,7 +11,6 @@ import com.zephsie.report.services.api.IReportService;
 import com.zephsie.report.utils.converters.UnixTimeToLocalDateTimeConverter;
 import com.zephsie.report.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.report.utils.exceptions.IllegalStateException;
-import com.zephsie.report.utils.exceptions.NotFoundException;
 import com.zephsie.report.utils.views.EntityView;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
@@ -56,17 +55,14 @@ public class ReportController {
     public ResponseEntity<Report> read(@PathVariable("id") UUID id,
                                        @RequestHeader("USER_ID") UUID userId) {
 
-        return reportService.read(id, userId)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new NotFoundException("Report not found"));
+        return ResponseEntity.ok(reportService.read(id, userId));
     }
 
     @GetMapping(value = "/{id}/content", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> readContent(@PathVariable("id") UUID id,
                                               @RequestHeader("USER_ID") UUID userId) {
 
-        Report report = reportService.read(id, userId)
-                .orElseThrow(() -> new NotFoundException("Report not found"));
+        Report report = reportService.read(id, userId);
 
         if (report.getStatus() != Status.DONE) {
             throw new IllegalStateException("Report is not ready");

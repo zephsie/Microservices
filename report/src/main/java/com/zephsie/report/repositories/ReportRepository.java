@@ -6,12 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, UUID> {
     Page<Report> findAllByUserId(Pageable pageable, UUID userId);
-
-    Optional<Report> findByIdAndUserId(UUID id, UUID userId);
 }
