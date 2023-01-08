@@ -130,7 +130,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(Map.of("message", "Registration successful. Please check your email for verification link."));
     }
 
-    @PostMapping(value = "/jwt-token", produces = "application/json")
+    @PostMapping(value = "/jwt-token", produces = "application/json", consumes = "application/json")
     public ResponseEntity<UserIdDTO> verifyToken(@RequestBody @Valid TokenDTO tokenDTO,
                                                  BindingResult bindingResult) {
 

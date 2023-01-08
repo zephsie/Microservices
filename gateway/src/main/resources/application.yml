@@ -18,7 +18,11 @@ spring:
         locator:
           lower-case-service-id: true
           enabled: true
+
 paths:
   allowed: /api/admin,/api/auth,/api/user,/api/logs
   auth: http://user-server/api/auth/jwt-token
-  forbidden: /system
+
+custom-response-sender:
+  content:
+    type: application/json

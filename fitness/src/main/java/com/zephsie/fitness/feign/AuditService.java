@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "audit-server")
 public interface AuditService {
 
-    @PostMapping(value = "/system/audit", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/api/audit", consumes = "application/json", produces = "application/json")
     void create(@RequestBody AuditLogDTO auditLogDTO);
 }

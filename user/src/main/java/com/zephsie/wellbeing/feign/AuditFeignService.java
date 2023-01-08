@@ -12,10 +12,10 @@ import java.util.UUID;
 @FeignClient(name = "audit-server")
 public interface AuditFeignService {
 
-    @GetMapping(value = "/system/audit/{id}", produces = "application/json")
+    @GetMapping(value = "/api/audit/{id}", produces = "application/json")
     AuditLogDTO read(@PathVariable("id") UUID id);
 
-    @GetMapping(value = "/system/audit", produces = "application/json")
+    @GetMapping(value = "/api/audit", produces = "application/json")
     Page<AuditLogDTO> read(@RequestParam(value = "page", defaultValue = "0") int page,
                            @RequestParam(value = "size", defaultValue = "10") int size);
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/system/audit")
+@RequestMapping("/api/audit")
 @Slf4j
 public class AuditController {
     private final IAuditLogService reportService;
