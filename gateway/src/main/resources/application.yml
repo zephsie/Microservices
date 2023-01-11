@@ -20,7 +20,7 @@ spring:
           enabled: true
 
 paths:
-  allowed: /api/admin,/api/auth,/api/user,/api/logs
+  allowed: /api/admin,/api/auth,/api/user,/api/audit
   auth: http://user-server/api/auth/jwt-token
 
 custom-response-sender:

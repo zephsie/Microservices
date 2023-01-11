@@ -2,8 +2,8 @@ package com.zephsie.wellbeing.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zephsie.wellbeing.dtos.AuditLogFullDTO;
-import com.zephsie.wellbeing.feign.AuditFeignService;
-import com.zephsie.wellbeing.services.api.IAuditService;
+import com.zephsie.wellbeing.feign.AuditLogFeignService;
+import com.zephsie.wellbeing.services.api.IAuditLogService;
 import com.zephsie.wellbeing.utils.exceptions.IllegalParamValuesException;
 import com.zephsie.wellbeing.utils.views.EntityView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/logs")
-public class LogsController {
+@RequestMapping("/api/audit")
+public class AuditLogController {
 
-    private final AuditFeignService auditFeignService;
+    private final AuditLogFeignService auditLogFeignService;
 
-    private final IAuditService auditService;
+    private final IAuditLogService auditService;
 
     @Autowired
-    public LogsController(AuditFeignService auditFeignService, IAuditService auditService) {
-        this.auditFeignService = auditFeignService;
+    public AuditLogController(AuditLogFeignService auditLogFeignService, IAuditLogService auditService) {
+        this.auditLogFeignService = auditLogFeignService;
         this.auditService = auditService;
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
     @JsonView(EntityView.System.class)
     public ResponseEntity<AuditLogFullDTO> read(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok(auditService.read(auditFeignService.read(id)));
+        return ResponseEntity.ok(auditService.read(auditLogFeignService.read(id)));
     }
 
     @GetMapping(produces = "application/json")
@@ -42,6 +42,6 @@ public class LogsController {
             throw new IllegalParamValuesException("Pagination values are not correct");
         }
 
-        return ResponseEntity.ok(auditService.read(auditFeignService.read(page, size)));
+        return ResponseEntity.ok(auditService.read(auditLogFeignService.read(page, size)));
     }
 }

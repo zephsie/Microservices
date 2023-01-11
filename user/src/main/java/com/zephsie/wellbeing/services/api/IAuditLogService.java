@@ -4,7 +4,7 @@ import com.zephsie.wellbeing.dtos.AuditLogDTO;
 import com.zephsie.wellbeing.dtos.AuditLogFullDTO;
 import org.springframework.data.domain.Page;
 
-public interface IAuditService {
+public interface IAuditLogService {
 
     AuditLogFullDTO read(AuditLogDTO auditLogDTO);
 

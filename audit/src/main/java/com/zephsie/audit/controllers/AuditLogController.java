@@ -20,13 +20,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/audit")
 @Slf4j
-public class AuditController {
+public class AuditLogController {
     private final IAuditLogService reportService;
 
     private final FieldErrorsToMapConverter fieldErrorsToMapConverter;
 
     @Autowired
-    public AuditController(IAuditLogService reportService, FieldErrorsToMapConverter fieldErrorsToMapConverter) {
+    public AuditLogController(IAuditLogService reportService, FieldErrorsToMapConverter fieldErrorsToMapConverter) {
         this.reportService = reportService;
         this.fieldErrorsToMapConverter = fieldErrorsToMapConverter;
     }
