@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -75,11 +74,9 @@ public class JournalService implements IJournalService {
     @Override
     @Transactional(readOnly = true)
     public Journal read(UUID id, UUID userId) {
-        Profile profile = profileRepository.findById(userId).orElseThrow(() -> new NotFoundException("Profile not found"));
-
         Journal journal = journalRepository.findById(id).orElseThrow(() -> new NotFoundException("Journal not found"));
 
-        if (!journal.getProfile().getId().equals(profile.getId())) {
+        if (journal.getProfile() == null || !journal.getProfile().getId().equals(userId)) {
             throw new AccessDeniedException("Access denied");
         }
 
@@ -89,24 +86,14 @@ public class JournalService implements IJournalService {
     @Override
     @Transactional(readOnly = true)
     public Page<Journal> read(int page, int size, UUID userId) {
-        Optional<Profile> profile = profileRepository.findById(userId);
-
-        if (profile.isEmpty()) {
-            throw new NotFoundException("Profile not found");
-        }
-
-        return journalRepository.findAllByProfile(profile.get(), Pageable.ofSize(size).withPage(page));
+        Profile profile = profileRepository.findById(userId).orElseThrow(() -> new NotFoundException("Profile not found"));
+        return journalRepository.findAllByProfile(profile, Pageable.ofSize(size).withPage(page));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<Journal> read(UUID userId, LocalDateTime dtSupplyStart, LocalDateTime dtSupplyEnd) {
-        Optional<Profile> profile = profileRepository.findById(userId);
-
-        if (profile.isEmpty()) {
-            throw new NotFoundException("Profile not found");
-        }
-
-        return journalRepository.findAllByProfileAndDtSupplyBetween(profile.get(), dtSupplyStart, dtSupplyEnd);
+        Profile profile = profileRepository.findById(userId).orElseThrow(() -> new NotFoundException("Profile not found"));
+        return journalRepository.findAllByProfileAndDtSupplyBetween(profile, dtSupplyStart, dtSupplyEnd);
     }
 }

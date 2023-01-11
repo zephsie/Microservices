@@ -11,7 +11,7 @@ public interface IProfileService {
 
     Optional<Profile> read(UUID id);
 
-    Profile create(ProfileDTO profileDTO, UUID id);
+    Profile create(UUID id, ProfileDTO profileDTO);
 
     Profile update(UUID id, ProfileDTO profileDTO, LocalDateTime version);
 

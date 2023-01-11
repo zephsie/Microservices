@@ -26,5 +26,4 @@ public class MinioConfiguration {
                 .endpoint(minioUrl)
                 .build();
     }
-
 }
