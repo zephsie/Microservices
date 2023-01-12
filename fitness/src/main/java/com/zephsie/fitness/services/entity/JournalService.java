@@ -74,10 +74,6 @@ public class JournalService implements IJournalService {
     @Override
     @Transactional(readOnly = true)
     public Journal read(UUID id, UUID userId) {
-        if (!profileRepository.existsById(userId)) {
-            throw new NotFoundException("Profile not found");
-        }
-
         Journal journal = journalRepository.findById(id).orElseThrow(() -> new NotFoundException("Journal not found"));
 
         if (!journal.getProfile().getId().equals(userId)) {
