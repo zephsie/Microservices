@@ -78,7 +78,7 @@ public class ProductController {
     @JsonView(EntityView.System.class)
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Logging(type = "PRODUCT", description = "Create product", userIdPosition = 2)
-            public ResponseEntity<Product> create(@RequestBody @Valid ProductDTO productDTO,
+    public ResponseEntity<Product> create(@RequestBody @Valid ProductDTO productDTO,
                                           BindingResult bindingResult,
                                           @RequestHeader("USER_ID") UUID userId) {
 

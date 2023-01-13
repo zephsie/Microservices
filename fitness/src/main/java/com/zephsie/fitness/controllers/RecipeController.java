@@ -64,7 +64,7 @@ public class RecipeController {
     @JsonView(EntityView.WithMappings.class)
     public ResponseEntity<Page<Recipe>> read(@RequestParam(value = "page", defaultValue = "0") int page,
                                              @RequestParam(value = "size", defaultValue = "10") int size,
-                                             @RequestParam(value = "userId") UUID userId) {
+                                             @RequestHeader("USER_ID") UUID userId) {
 
         if (page < 0 || size <= 0) {
             throw new IllegalParamValuesException("Pagination values are not correct");
