@@ -44,7 +44,7 @@ public class AuditLogService implements IAuditLogService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "AuditLogPage", key ="#page.toString() + #size.toString()")
+    @Cacheable(value = "AuditLogPage", key ="#page.toString() + '_' + #size.toString()")
     public Page<AuditLog> findAll(int page, int size) {
         return auditLogRepository.findAll(Pageable.ofSize(size).withPage(page));
     }
