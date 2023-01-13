@@ -55,7 +55,7 @@ public class ProfileController {
             throw new BasicFieldValidationException(fieldErrorsToMapConverter.map(bindingResult));
         }
 
-        return ResponseEntity.ok(profileService.create(profileDTO, userId));
+        return ResponseEntity.ok(profileService.create(userId, profileDTO));
     }
 
     @PutMapping(value = "/me/version/{version}", consumes = "application/json", produces = "application/json")

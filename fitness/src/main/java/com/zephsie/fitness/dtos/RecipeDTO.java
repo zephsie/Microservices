@@ -23,7 +23,7 @@ public class RecipeDTO {
     @NotEmptyList(message = "Composition is required", groups = {CompositionListGroup.FirstOrder.class})
     @ListWithoutNulls(message = "Composition must not contain empty elements", groups = {CompositionListGroup.SecondOrder.class})
     @ValidCompositionProperties(message = "Composition contains invalid properties", groups = {CompositionListGroup.ThirdOrder.class})
-    @NotNullProductIds(message = "Product Ids cannot be empty", groups = {CompositionListGroup.FourthOrder.class})
+    @NotNullProductIds(groups = {CompositionListGroup.FourthOrder.class})
     @UniqueProductIds(message = "Composition contains duplicate product Ids", groups = {CompositionListGroup.FifthOrder.class})
     private List<CompositionDTO> composition;
 }
