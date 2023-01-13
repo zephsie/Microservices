@@ -67,10 +67,10 @@ public class AuthenticationService implements IAuthenticationService {
     public User verifyUser(VerificationDTO verificationDTO) {
         Optional<User> optionalUser = userRepository.findByEmail(verificationDTO.getEmail());
 
-        User user = optionalUser.orElseThrow(() -> new InvalidCredentialException("User with email " + verificationDTO.getEmail() + " not found"));
+        User user = optionalUser.orElseThrow(() -> new InvalidCredentialException("Invalid credentials"));
 
         if (!passwordEncoder.matches(verificationDTO.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialException("Invalid password");
+            throw new InvalidCredentialException("Invalid credentials");
         }
 
         if (user.getStatus() != Status.WAITING_ACTIVATION) {
@@ -96,10 +96,10 @@ public class AuthenticationService implements IAuthenticationService {
     public VerificationToken refreshVerificationToken(LoginDTO loginDTO) {
         Optional<User> userOptional = userRepository.findByEmail(loginDTO.getEmail());
 
-        User userFromDB = userOptional.orElseThrow(() -> new InvalidCredentialException("User with email " + loginDTO.getEmail() + " not found"));
+        User userFromDB = userOptional.orElseThrow(() -> new InvalidCredentialException("Invalid credentials"));
 
         if (!passwordEncoder.matches(loginDTO.getPassword(), userFromDB.getPassword())) {
-            throw new InvalidCredentialException("Invalid password");
+            throw new InvalidCredentialException("Invalid credentials");
         }
 
         if (userFromDB.getStatus() != Status.WAITING_ACTIVATION) {
