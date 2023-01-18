@@ -1,10 +1,9 @@
 package com.zephsie.report.queue;
 
 import com.zephsie.report.models.entity.Report;
-import com.zephsie.report.models.entity.ReportType;
 import com.zephsie.report.models.entity.Status;
+import com.zephsie.report.services.api.IReportProviderFactory;
 import com.zephsie.report.services.api.IReportService;
-import com.zephsie.report.services.entity.JournalReportProvider;
 import com.zephsie.report.utils.exceptions.NotFoundException;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -24,18 +23,18 @@ public class ReportConsumer {
 
     private final IReportService reportService;
 
-    private final JournalReportProvider journalReportProvider;
-
     private final MinioClient minioClient;
+
+    private final IReportProviderFactory reportProviderFactory;
 
     @Value("${minio.bucket.name}")
     private String bucketName;
 
     @Autowired
-    public ReportConsumer(IReportService reportService, JournalReportProvider journalReportProvider,  MinioClient minioClient) {
+    public ReportConsumer(IReportService reportService, MinioClient minioClient, IReportProviderFactory reportProviderFactory) {
         this.reportService = reportService;
-        this.journalReportProvider = journalReportProvider;
         this.minioClient = minioClient;
+        this.reportProviderFactory = reportProviderFactory;
     }
 
     @RabbitListener(queues = "${rabbitmq.queue}", concurrency = "30")
@@ -45,16 +44,8 @@ public class ReportConsumer {
 
             Report report = reportService.read(id).orElseThrow(() -> new NotFoundException("Report not found"));
 
-            byte[] reportBytes;
-
             try {
-                if (report.getReportType() == ReportType.JOURNAL) {
-                    reportBytes = journalReportProvider.generateReport(report);
-                } else {
-                    throw new NotFoundException("Report type not supported");
-                }
-
-                InputStream inputStream = new ByteArrayInputStream(reportBytes);
+                InputStream inputStream = new ByteArrayInputStream(reportProviderFactory.getProvider(report).generateReport(report));
 
                 minioClient.putObject(PutObjectArgs.builder()
                         .bucket(bucketName)
