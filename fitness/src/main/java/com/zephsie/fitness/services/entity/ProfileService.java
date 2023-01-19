@@ -41,14 +41,14 @@ public class ProfileService implements IProfileService {
 
     @Override
     @Transactional
-    public Profile create(UUID id, ProfileDTO profileDTO) {
-        if (profileRepository.existsById(id)) {
-            throw new NotUniqueException("Profile with id " + id + " already exists");
+    public Profile create(UUID userId, ProfileDTO profileDTO) {
+        if (profileRepository.existsById(userId)) {
+            throw new NotUniqueException("Profile with id " + userId + " already exists");
         }
 
         Profile newProfile = profileDTOConverter.convertToEntity(profileDTO);
 
-        newProfile.setId(id);
+        newProfile.setId(userId);
 
         return profileRepository.save(newProfile);
     }

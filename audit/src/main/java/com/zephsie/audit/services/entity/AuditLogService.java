@@ -5,7 +5,6 @@ import com.zephsie.audit.models.AuditLog;
 import com.zephsie.audit.repositories.AuditLogRepository;
 import com.zephsie.audit.services.api.IAuditLogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ public class AuditLogService implements IAuditLogService {
     }
 
     @Override
-    @Cacheable(value = "AuditLog", key = "#id")
     @Transactional(readOnly = true)
     public Optional<AuditLog> findById(UUID id) {
         return auditLogRepository.findById(id);
@@ -44,7 +42,6 @@ public class AuditLogService implements IAuditLogService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "AuditLogPage", key ="#page.toString() + '_' + #size.toString()")
     public Page<AuditLog> findAll(int page, int size) {
         return auditLogRepository.findAll(Pageable.ofSize(size).withPage(page));
     }
