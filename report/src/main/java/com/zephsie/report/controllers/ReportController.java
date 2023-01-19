@@ -16,7 +16,6 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +42,7 @@ public class ReportController {
     public ReportController(IReportService reportService,
                             UnixTimeToLocalDateTimeConverter unixTimeToLocalDateTimeConverter,
                             ReportProducer reportProducer,
-                            @Qualifier("minioReportClient") MinioClient minioClient) {
+                            MinioClient minioClient) {
 
         this.reportService = reportService;
         this.unixTimeToLocalDateTimeConverter = unixTimeToLocalDateTimeConverter;

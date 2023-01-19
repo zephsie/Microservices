@@ -18,7 +18,7 @@ public class MinioReportConfiguration {
     @Value("${minio.url}")
     private String minioUrl;
 
-    @Bean("minioReportClient")
+    @Bean
     @Primary
     public MinioClient minioClient() {
         return new MinioClient.Builder()

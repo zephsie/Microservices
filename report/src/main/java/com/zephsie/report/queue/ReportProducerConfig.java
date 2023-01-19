@@ -20,17 +20,17 @@ public class ReportProducerConfig {
     @Value("${rabbitmq.queue}")
     private String queue;
 
-    @Bean(name = "reportQueue")
+    @Bean
     public Queue queue() {
         return new Queue(queue, false);
     }
 
-    @Bean(name = "reportExchange")
+    @Bean
     public TopicExchange exchange() {
         return new TopicExchange(exchange);
     }
 
-    @Bean(name = "reportBinding")
+    @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }

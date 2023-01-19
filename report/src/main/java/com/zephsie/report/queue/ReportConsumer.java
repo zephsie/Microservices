@@ -10,7 +10,6 @@ import io.minio.PutObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,7 @@ public class ReportConsumer {
 
     @Autowired
     public ReportConsumer(IReportService reportService,
-                          @Qualifier("minioReportClient") MinioClient minioClient,
+                          MinioClient minioClient,
                           IReportProviderFactory reportProviderFactory) {
 
         this.reportService = reportService;
