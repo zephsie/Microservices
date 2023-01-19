@@ -8,6 +8,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,7 +24,11 @@ public class ReportProducer {
     private final IReportService reportService;
 
     @Autowired
-    public ReportProducer(RabbitTemplate rabbitTemplate, TopicExchange exchange, Binding binding, IReportService reportService) {
+    public ReportProducer(RabbitTemplate rabbitTemplate,
+                          @Qualifier("reportExchange") TopicExchange exchange,
+                          @Qualifier("reportBinding") Binding binding,
+                          IReportService reportService) {
+
         this.rabbitTemplate = rabbitTemplate;
         this.exchange = exchange;
         this.binding = binding;

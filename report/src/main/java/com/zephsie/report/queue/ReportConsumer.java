@@ -10,6 +10,7 @@ import io.minio.PutObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,13 +32,16 @@ public class ReportConsumer {
     private String bucketName;
 
     @Autowired
-    public ReportConsumer(IReportService reportService, MinioClient minioClient, IReportProviderFactory reportProviderFactory) {
+    public ReportConsumer(IReportService reportService,
+                          @Qualifier("minioReportClient") MinioClient minioClient,
+                          IReportProviderFactory reportProviderFactory) {
+
         this.reportService = reportService;
         this.minioClient = minioClient;
         this.reportProviderFactory = reportProviderFactory;
     }
 
-    @RabbitListener(queues = "${rabbitmq.queue}", concurrency = "30")
+    @RabbitListener(queues = "${rabbitmq.queue}", concurrency = "${rabbitmq.concurrency}")
     public void consume(UUID id) {
         try {
             log.info("Consuming report with id: {}", id);

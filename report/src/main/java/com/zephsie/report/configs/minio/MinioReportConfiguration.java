@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
-public class MinioConfiguration {
+public class MinioReportConfiguration {
 
     @Value("${minio.access.key}")
     private String accessKey;
@@ -18,7 +18,7 @@ public class MinioConfiguration {
     @Value("${minio.url}")
     private String minioUrl;
 
-    @Bean
+    @Bean("minioReportClient")
     @Primary
     public MinioClient minioClient() {
         return new MinioClient.Builder()
