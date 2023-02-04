@@ -6,19 +6,25 @@ import com.zephsie.report.services.api.IReportProviderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class ReportProviderFactory implements IReportProviderFactory {
-    private final JournalReportProvider journalReportProvider;
+    private final Map<String, IReportProvider> map;
 
     @Autowired
-    public ReportProviderFactory(JournalReportProvider journalReportProvider) {
-        this.journalReportProvider = journalReportProvider;
+    public ReportProviderFactory(Map<String, IReportProvider> map) {
+        this.map = map;
     }
 
     @Override
     public IReportProvider getProvider(Report report) {
-        return switch (report.getReportType()) {
-            case JOURNAL -> journalReportProvider;
-        };
+        IReportProvider reportProvider = map.get(report.getReportType().toString());
+
+        if (reportProvider == null) {
+            throw new UnsupportedOperationException("Report type not supported");
+        }
+
+        return reportProvider;
     }
 }

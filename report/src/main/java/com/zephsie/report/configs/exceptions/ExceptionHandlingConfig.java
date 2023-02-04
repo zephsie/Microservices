@@ -2,6 +2,7 @@ package com.zephsie.report.configs.exceptions;
 
 import com.zephsie.report.utils.exceptions.AccessDeniedException;
 import com.zephsie.report.utils.exceptions.IllegalParamValuesException;
+import com.zephsie.report.utils.exceptions.IllegalStateException;
 import com.zephsie.report.utils.exceptions.NotFoundException;
 import com.zephsie.report.utils.responses.api.ErrorResponse;
 import com.zephsie.report.utils.responses.entity.SingleErrorResponse;

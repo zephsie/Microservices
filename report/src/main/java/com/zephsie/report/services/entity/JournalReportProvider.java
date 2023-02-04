@@ -5,18 +5,19 @@ import com.zephsie.report.feign.JournalService;
 import com.zephsie.report.models.entity.Report;
 import com.zephsie.report.services.api.IReportProvider;
 import com.zephsie.report.utils.converters.LocalDateTimeToUnixTimeConverter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 
-@Service
+@Component("JOURNAL")
 @Slf4j
 public class JournalReportProvider implements IReportProvider {
     private final JournalService journalService;
@@ -29,6 +30,7 @@ public class JournalReportProvider implements IReportProvider {
         this.localDateTimeToUnixTimeConverter = localDateTimeToUnixTimeConverter;
     }
 
+    @SneakyThrows
     public byte[] generateReport(Report report) {
         Collection<JournalDTO> collection = journalService.read(
                 localDateTimeToUnixTimeConverter.convert(report.getDtFrom()),
@@ -62,11 +64,7 @@ public class JournalReportProvider implements IReportProvider {
 
             workbook.write(byteArrayOutputStream);
 
-            workbook.close();
-
             return byteArrayOutputStream.toByteArray();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }
